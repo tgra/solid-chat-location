@@ -1,0 +1,31 @@
+@prefix ex: <https://example.org/data/> .
+@prefix chat_shape: <https://solidproject.org/shapes/chat#> .
+@prefix mee: <http://www.w3.org/ns/pim/meeting#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#############################
+# Chat Channel
+#############################
+
+ex:chat1
+    a mee:LongChat ;
+    dc:title "Project Chat" ;
+    dc:created "2026-04-07T12:00:00Z"^^xsd:dateTime ;
+
+    # Link to location node (required by shape)
+    prov:hasLocation ex:chat1-location .
+
+#############################
+# Location Node
+#############################
+
+ex:chat1-location
+    # Required container URI
+    prov:hasLocation <https://example.org/chat/2026/04/07/> ;
+
+    # Required date components
+    chat_shape:year  "2026"^^xsd:gYear ;
+    chat_shape:month "--04"^^xsd:gMonth ;
+    chat_shape:day   "---07"^^xsd:gDay .

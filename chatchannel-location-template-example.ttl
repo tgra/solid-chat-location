@@ -1,0 +1,21 @@
+ex:MyChatChannel
+    a ex:ChatChannel ;
+    prov:hasLocation [
+        ex:locationTemplate "/{yyyy}/{mm}/{dd}/" ;
+        ex:locationVariable ex:yyyy, ex:mm, ex:dd ;
+        ex:locationBinding [
+            ex:variable ex:yyyy ;
+            ex:sourceProperty ex:messageTimestamp ;
+            ex:transform "year"^^xsd:string ;
+        ],
+        [
+            ex:variable ex:mm ;
+            ex:sourceProperty ex:messageTimestamp ;
+            ex:transform "month"^^xsd:string ;
+        ],
+        [
+            ex:variable ex:dd ;
+            ex:sourceProperty ex:messageTimestamp ;
+            ex:transform "day"^^xsd:string ;
+        ]
+    ] .

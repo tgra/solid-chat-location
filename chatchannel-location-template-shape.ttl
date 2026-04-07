@@ -1,0 +1,38 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix ex: <http://example.org/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+ex:ChatChannelShape
+    a sh:NodeShape ;
+    sh:targetClass ex:ChatChannel ;
+    prov:hasLocation ex:ChatChannelLocationShape .
+
+ex:ChatChannelLocationShape
+    a sh:PropertyShape ;
+    sh:path prov:hasLocation ;  # property of the node shape
+    sh:minCount 1 ; // no maxCount because we want to allow multiple location descriptions for multiple days
+    sh:codeIdentifier "chatChannelLocation" ;
+    sh:name "Chat Channel Location Shape" ;
+    sh:description "Defines a URI template and variable mappings for chat storage." ;
+    sh:nodeKind sh:BlankNodeOrIRI ; # expects a blank node describing the template
+
+    sh:property [
+        sh:path ex:locationTemplate ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path ex:locationVariable ;
+        sh:minCount 3 ;
+        sh:maxCount 3 ;
+    ] ;
+    sh:property [
+        sh:path ex:locationBinding ;
+        sh:nodeKind sh:BlankNodeOrIRI ;
+        sh:minCount 3 ; # one for yyyy, mm, dd
+    ] .
+
+
+ex:locationTemplate "/{yyyy}/{mm}/{dd}/" .
