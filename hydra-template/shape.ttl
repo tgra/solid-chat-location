@@ -1,0 +1,84 @@
+@prefix sh:         <http://www.w3.org/ns/shacl#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:       <http://www.w3.org/ns/prov#> .
+@prefix hydra:      <http://www.w3.org/ns/hydra/core#> .
+@prefix mee:        <http://www.w3.org/ns/pim/meeting#> .
+@prefix chat_shape: <https://solidproject.org/shapes/chat#> .
+
+#############################
+# Chat Channel Shape
+#############################
+
+chat_shape:ChatChannelShape
+    a sh:NodeShape ;
+    sh:targetClass mee:LongChat ;
+    sh:name "Chat Channel Shape" ;
+    sh:description "A Solid Chat channel with a Hydra-based location description." ;
+
+    sh:property chat_shape:chatchannelshape_location .
+
+chat_shape:chatchannelshape_location
+    a sh:PropertyShape ;
+    sh:path prov:hasLocation ;
+    sh:node chat_shape:ChatChannelLocationShape ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:name "Location" ;
+    sh:description "Structured location using Hydra template and mappings." .
+
+#############################
+# Chat Channel Location Shape
+#############################
+
+chat_shape:ChatChannelLocationShape
+    a sh:NodeShape ;
+    sh:name "Chat Channel Location Shape" ;
+    sh:description "Defines a URI template and variable mappings for chat storage." ;
+
+    # Template definition
+    sh:property [
+        sh:path hydra:template ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "URI Template" ;
+        sh:description "URI template, e.g. /chat/{year}/{month}/{day}/" ;
+    ] ;
+
+    # Variable mappings
+    sh:property [
+        sh:path hydra:mapping ;
+        sh:node chat_shape:ChatLocationVariableShape ;
+        sh:minCount 1 ;
+        sh:name "Variable Mapping" ;
+        sh:description "Mappings defining how template variables are resolved." ;
+    ] .
+
+#############################
+# Variable Mapping Shape
+#############################
+
+chat_shape:ChatLocationVariableShape
+    a sh:NodeShape ;
+    sh:name "Chat Location Variable Shape" ;
+    sh:description "Defines a variable used in the URI template and its source." ;
+
+    # Variable name
+    sh:property [
+        sh:path hydra:variable ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Variable Name" ;
+        sh:description "Name of the variable in the template, e.g. year, month, day." ;
+    ] ;
+
+    # Source property
+    sh:property [
+        sh:path prov:wasDerivedFrom ;
+        sh:node sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Source Property" ;
+        sh:description "Property used to derive the variable value, e.g. dc:created." ;
+    ] .
