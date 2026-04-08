@@ -1,38 +1,69 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix ex: <http://example.org/ns#> .
+@prefix chat: <http://example.org/ns/chat#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mee: <http://www.w3.org/ns/pim/meeting#> .
+@prefix chat_shape: <https://solidproject.org/shapes/chat#> .
 
+################################################################################
+# Node Shape for ChatChannel
+################################################################################
 
-ex:ChatChannelShape
+chat_shape:ChatChannelShape
     a sh:NodeShape ;
-    sh:targetClass ex:ChatChannel ;
-    prov:hasLocation ex:ChatChannelLocationShape .
+    sh:targetClass mee:LongChat ;  # applies to LongChat instances
+    sh:name "Chat Channel Shape" ;
+    sh:description "Shape for chat channels with dynamic location templates." ;
+    prov:hasLocation chat:ChatChannelLocationShape .
 
-ex:ChatChannelLocationShape
+################################################################################
+# Property Shape for ChatChannel Location
+################################################################################
+
+chat_shape:ChatChannelLocationShape
     a sh:PropertyShape ;
     sh:path prov:hasLocation ;  # property of the node shape
-    sh:minCount 1 ; // no maxCount because we want to allow multiple location descriptions for multiple days
+    sh:minCount 1 ; # allow multiple location descriptions for multiple days
     sh:codeIdentifier "chatChannelLocation" ;
     sh:name "Chat Channel Location Shape" ;
-    sh:description "Defines a URI template and variable mappings for chat storage." ;
-    sh:nodeKind sh:BlankNodeOrIRI ; # expects a blank node describing the template
+    sh:description "Defines a URI template, variable mappings, and optional resolved URI for chat storage." ;
+    sh:nodeKind sh:BlankNodeOrIRI ;
 
+    # Template property
     sh:property [
-        sh:path ex:locationTemplate ;
+        sh:path chat:locationTemplate ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
+        sh:description "URI template string for dynamic chat storage paths." ;
     ] ;
+
+    # Variables property
     sh:property [
-        sh:path ex:locationVariable ;
+        sh:path chat:locationVariable ;
         sh:minCount 3 ;
         sh:maxCount 3 ;
+        sh:description "List of variables used in the template (e.g., yyyy, mm, dd)." ;
     ] ;
+
+    # Bindings property
     sh:property [
-        sh:path ex:locationBinding ;
+        sh:path chat:locationBinding ;
         sh:nodeKind sh:BlankNodeOrIRI ;
-        sh:minCount 3 ; # one for yyyy, mm, dd
+        sh:minCount 3 ; # one per variable
+        sh:description "Bindings mapping template variables to source properties." ;
+    ] ;
+
+    # Optional resolved URI property
+    sh:property [
+        sh:path chat:resolvedURI ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description "Optional fully resolved URI for clients that do not support templates." ;
     ] .
 
+################################################################################
+# Example Template
+################################################################################
 
-ex:locationTemplate "/{yyyy}/{mm}/{dd}/" .
+chat:locationTemplate "/{yyyy}/{mm}/{dd}/" .

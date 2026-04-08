@@ -1,21 +1,33 @@
-ex:MyChatChannel
-    a ex:ChatChannel ;
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix chat: <http://example.org/ns/chat#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix mee: <http://www.w3.org/ns/pim/meeting#> .
+
+
+# Example Chat Channel
+:chatChannel1 a mee:LongChat ;
     prov:hasLocation [
-        ex:locationTemplate "/{yyyy}/{mm}/{dd}/" ;
-        ex:locationVariable ex:yyyy, ex:mm, ex:dd ;
-        ex:locationBinding [
-            ex:variable ex:yyyy ;
-            ex:sourceProperty ex:messageTimestamp ;
-            ex:transform "year"^^xsd:string ;
-        ],
-        [
-            ex:variable ex:mm ;
-            ex:sourceProperty ex:messageTimestamp ;
-            ex:transform "month"^^xsd:string ;
-        ],
-        [
-            ex:variable ex:dd ;
-            ex:sourceProperty ex:messageTimestamp ;
-            ex:transform "day"^^xsd:string ;
-        ]
+        # Template defining the dynamic path
+        chat:locationTemplate "/chat/{yyyy}/{mm}/{dd}/" ;
+
+        # List of variables used in the template
+        chat:locationVariable "yyyy" , "mm" , "dd" ;
+
+        # Bindings for each variable, pointing to a source property
+        chat:locationBinding [
+            chat:variable "yyyy" ;
+            prov:wasDerivedFrom dc:created ;
+        ] ;
+        chat:locationBinding [
+            chat:variable "mm" ;
+            prov:wasDerivedFrom dc:created ;
+        ] ;
+        chat:locationBinding [
+            chat:variable "dd" ;
+            prov:wasDerivedFrom dc:created ;
+        ];
+        # Resolved URI for clients that cannot handle templates
+        chat:resolvedURI "/chat/2026/04/08/" ;
     ] .
