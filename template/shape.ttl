@@ -14,7 +14,7 @@ chat_shape:ChatChannelShape
     sh:targetClass mee:LongChat ;  # applies to LongChat instances
     sh:name "Chat Channel Shape" ;
     sh:description "Shape for chat channels with dynamic location templates." ;
-    prov:hasLocation chat:ChatChannelLocationShape .
+    sh:property chat_shape:ChatChannelLocationShape .
 
 ################################################################################
 # Property Shape for ChatChannel Location
@@ -43,27 +43,35 @@ chat_shape:ChatChannelLocationShape
         sh:minCount 3 ;
         sh:maxCount 3 ;
         sh:description "List of variables used in the template (e.g., yyyy, mm, dd)." ;
+        sh:in ("yyyy" "mm" "dd") ;
     ] ;
 
     # Bindings property
     sh:property [
-        sh:path chat:locationBinding ;
-        sh:nodeKind sh:BlankNodeOrIRI ;
-        sh:minCount 3 ; # one per variable
-        sh:description "Bindings mapping template variables to source properties." ;
+    sh:path chat:locationBinding ;
+    sh:minCount 3 ;
+    sh:node [
+        sh:property [
+            sh:path chat:variable ;
+            sh:datatype xsd:string ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+            sh:in ("yyyy" "mm" "dd") ;
+        ] ;
+        sh:property [
+            sh:path prov:wasDerivedFrom ;
+            sh:nodeKind sh:IRI ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+        ] ;
     ] ;
+] ;
 
     # Optional resolved URI property
     sh:property [
         sh:path chat:resolvedURI ;
-        sh:datatype xsd:string ;
-        sh:minCount 0 ;
+        sh:nodeKind sh:IRI ;
         sh:maxCount 1 ;
         sh:description "Optional fully resolved URI for clients that do not support templates." ;
     ] .
 
-################################################################################
-# Example Template
-################################################################################
-
-chat:locationTemplate "/{yyyy}/{mm}/{dd}/" .

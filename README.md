@@ -9,7 +9,7 @@ This document describes how the storage location of a Solid chat channel can be 
 Key points:
 
 * A ChatChannel can persist over multiple days and so can have **one or more container locations**.
-* Each location is defined using a **URI template** with variables.
+* The location is defined using a **URI template** with variables.
 * Variables are bound to **source properties** (e.g., dc:created) to generate final URIs.
 * SHACL validates the **structure** of templates and bindings, ensuring metadata consistency.
 
