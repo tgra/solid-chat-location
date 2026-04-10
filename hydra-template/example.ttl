@@ -1,46 +1,56 @@
-@prefix ex: <https://example.org/data/> .
-@prefix chat_shape: <https://solidproject.org/shapes/chat#> .
-@prefix mee: <http://www.w3.org/ns/pim/meeting#> .
+@prefix ex:   <https://example.org/data/> .
+@prefix mee:  <http://www.w3.org/ns/pim/meeting#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
-@prefix dc: <http://purl.org/dc/elements/1.1/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix hydra:<http://www.w3.org/ns/hydra/core#> .
+@prefix dc:   <http://purl.org/dc/elements/1.1/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
-#############################
-# Chat Channel
-#############################
+#####################################################
+# Chat Instance
+#####################################################
 
 ex:chat1
     a mee:LongChat ;
     dc:title "Project Chat" ;
     dc:created "2026-04-07T12:00:00Z"^^xsd:dateTime ;
-
-    # Link to Hydra-based location description
     prov:hasLocation ex:chat1-location .
 
-#############################
-# Location Node (Hydra Template)
-#############################
+#####################################################
+# Explicit derived temporal properties
+#####################################################
+
+ex:chat1
+    ex:year  "2026"^^xsd:gYear ;
+    ex:month "04"^^xsd:gMonth ;
+    ex:day   "07"^^xsd:gDay .
+
+#####################################################
+# Location (Hydra template)
+#####################################################
 
 ex:chat1-location
+    a hydra:IriTemplate ;
+
     hydra:template "/chat/{year}/{month}/{day}/" ;
 
-    hydra:mapping ex:mapYear,
-                  ex:mapMonth,
-                  ex:mapDay .
+    hydra:variableRepresentation hydra:BasicRepresentation ;
 
-#############################
-# Variable Mappings
-#############################
+    hydra:mapping
+        ex:mapYear ,
+        ex:mapMonth ,
+        ex:mapDay .
 
 ex:mapYear
+    a hydra:IriTemplateMapping ;
     hydra:variable "year" ;
-    prov:wasDerivedFrom dc:created .
+    hydra:property ex:year .
 
 ex:mapMonth
+    a hydra:IriTemplateMapping ;
     hydra:variable "month" ;
-    prov:wasDerivedFrom dc:created .
+    hydra:property ex:month .
 
 ex:mapDay
+    a hydra:IriTemplateMapping ;
     hydra:variable "day" ;
-    prov:wasDerivedFrom dc:created .
+    hydra:property ex:day .

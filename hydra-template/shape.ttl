@@ -4,6 +4,7 @@
 @prefix hydra:      <http://www.w3.org/ns/hydra/core#> .
 @prefix mee:        <http://www.w3.org/ns/pim/meeting#> .
 @prefix chat_shape: <https://solidproject.org/shapes/chat#> .
+@prefix ex:         <https://example.org/data/> .
 
 #############################
 # Chat Channel Shape
@@ -13,9 +14,41 @@ chat_shape:ChatChannelShape
     a sh:NodeShape ;
     sh:targetClass mee:LongChat ;
     sh:name "Chat Channel Shape" ;
-    sh:description "A Solid Chat channel with a Hydra-based location description." ;
+    sh:description "A Solid Chat channel with a Hydra-based location description and explicit temporal decomposition." ;
 
-    sh:property chat_shape:chatchannelshape_location .
+    sh:property chat_shape:chatchannelshape_location ;
+
+    ########################################
+    # REQUIRED EXPLICIT DERIVED PROPERTIES
+    ########################################
+
+    sh:property [
+        sh:path ex:year ;
+        sh:datatype xsd:gYear ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Year" ;
+    ] ;
+
+    sh:property [
+        sh:path ex:month ;
+        sh:datatype xsd:gMonth ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Month" ;
+    ] ;
+
+    sh:property [
+        sh:path ex:day ;
+        sh:datatype xsd:gDay ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:name "Day" ;
+    ] .
+
+#############################
+# Location Property Shape
+#############################
 
 chat_shape:chatchannelshape_location
     a sh:PropertyShape ;
@@ -34,8 +67,9 @@ chat_shape:ChatChannelLocationShape
     a sh:NodeShape ;
     sh:name "Chat Channel Location Shape" ;
     sh:description "Defines a URI template and variable mappings for chat storage." ;
+    sh:class hydra:IriTemplate ;
 
-    # Template definition
+    # URI template
     sh:property [
         sh:path hydra:template ;
         sh:datatype xsd:string ;
@@ -45,11 +79,12 @@ chat_shape:ChatChannelLocationShape
         sh:description "URI template, e.g. /chat/{year}/{month}/{day}/" ;
     ] ;
 
-    # Variable mappings
+    # Mapping list
     sh:property [
         sh:path hydra:mapping ;
         sh:node chat_shape:ChatLocationVariableShape ;
-        sh:minCount 1 ;
+        sh:minCount 3 ;
+        sh:maxCount 3 ;
         sh:name "Variable Mapping" ;
         sh:description "Mappings defining how template variables are resolved." ;
     ] .
@@ -63,22 +98,23 @@ chat_shape:ChatLocationVariableShape
     sh:name "Chat Location Variable Shape" ;
     sh:description "Defines a variable used in the URI template and its source." ;
 
-    # Variable name
+    # Variable name constraint
     sh:property [
         sh:path hydra:variable ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
+        sh:in ("year" "month" "day") ;
         sh:name "Variable Name" ;
-        sh:description "Name of the variable in the template, e.g. year, month, day." ;
+        sh:description "Name of the variable in the template." ;
     ] ;
 
-    # Source property
+    # Property binding
     sh:property [
-        sh:path prov:wasDerivedFrom ;
-        sh:node sh:IRI ;
+        sh:path hydra:property ;
+        sh:nodeKind sh:IRI ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:name "Source Property" ;
-        sh:description "Property used to derive the variable value, e.g. dc:created." ;
+        sh:description "Property used to derive the variable value." ;
     ] .
