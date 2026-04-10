@@ -14,6 +14,4 @@ Key points:
 * SHACL validates the **structure** of templates and bindings, ensuring metadata consistency.
 
 
-Two potential representations are given:
-* [use of hydra templates](./hydra-template/readme.md)
-* [non-hydra templates](./template/readme.md)
+* [hydra template example](./hydra-template/readme.md)
